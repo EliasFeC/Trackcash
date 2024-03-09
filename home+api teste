@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <link rel="stylesheet" href="trackcash.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trackcash</title>
 </head>
+
 <body>
     <header>
         <div class="interface">
@@ -31,53 +33,101 @@
     </header>
     <div class="cambio">
         <table>
-         <tr>
-            <th>Moeda</th>
-            <th>Taxa de Câmbio</th>
-        </tr>
-        <tr id="exchange-rate-row">
-            <td>
-                <label for="escolha">Escolha uma moeda:</label>
-                <select id="escolha" name="escolha" onchange="updateExchangeRate()">
-                    <option value="USD">Dólar Americano (USD)</option>
-                    <option value="EUR">Euro (EUR)</option>
-                    <option value="GBP">Libra Esterlina (GBP)</option>
-                    <option value="BRL">Real (BRL)</option>
-                    
-                </select>
-            </td>
-            <td id="exchange-rate"></td>
-        </tr>
+            <tr>
+                <th>Moeda</th>
+                <th>Taxa de Câmbio</th>
+            </tr>
+            <tr id="exchange-rate-row">
+                <td>
+                    <label for="escolha">Escolha uma moeda:</label>
+                    <select id="escolha" name="escolha" onchange="updateExchangeRate()">
+                        <option value="USD">Dólar Americano (USD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                        <option value="GBP">Libra Esterlina (GBP)</option>
+                        <option value="JPY">Iene japônes</option>
+                    </select>
+                </td>
+                <td id="exchange-rate"></td>
+            </tr>
         </table>
     </div>
-
-    <script>
-        // Substitua 'YOUR_APP_ID' pelo seu App ID da Open Exchange Rates
-        const appId = '2028a3dd992448969db44d3fa5cb89e0';
-
-        // URL da API de câmbio
-        const apiUrl = `https://openexchangerates.org/api/latest.json?app_id=2028a3dd992448969db44d3fa5cb89e0`;
-
-        // Função para buscar dados da API
-        async function fetchExchangeRate(base) {
-            try {
-                const response = await fetch(`${apiUrl}`);
-                const data = await response.json();
-                return data.rates;
-            } catch (error) {
-                console.error('Erro ao buscar taxa de câmbio:', error);
-            }
-        }
-
-        // Função para atualizar a taxa de câmbio com base na seleção
-        async function updateExchangeRate() {
-            const selectedCurrency = document.getElementById('escolha').value;
-            const rates = await fetchExchangeRate(selectedCurrency);
-            document.getElementById('exchange-rate').innerText = `Taxa de câmbio para ${selectedCurrency}: ${rates[selectedCurrency]}`;
-        }
-
-        // Chama a função para atualizar a taxa de câmbio ao carregar a página
-        window.onload = updateExchangeRate;
-    </script>
+    <div class="grafico-cambio">
+        <canvas id="myChart"></canvas>
+    </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let chartblock = null;
+
+    async function fetchExchangeRate(base) {
+        const apiUrl = `https://economia.awesomeapi.com.br/last/BRL-${base}`;
+        try {
+            const response = await fetch(`${apiUrl}`);
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Erro ao buscar taxa de câmbio:', error);
+        }
+    }
+
+    async function updateExchangeRate() {
+        const selectedCurrency = document.getElementById('escolha').value;
+        const rates = await fetchExchangeRate(selectedCurrency);
+        document.getElementById('exchange-rate').innerText = `Taxa de câmbio para ${selectedCurrency}: ${rates[`BRL${selectedCurrency}`].ask}`;
+        var query_vars = {
+            apikey: 'fca_live_k7qgm7xjiMokaysiPd3oWbEzdbt8CpcsWwfrvhDH',
+            date: "2024-03-04",
+            currencies: selectedCurrency,
+        }
+
+        const response = await fetch(`https://economia.awesomeapi.com.br/json/daily/BRL-${selectedCurrency}/30`);
+        const data = await response.json();
+        chart(data,selectedCurrency)
+    }
+    function chart(data,selectedCurrency) {
+        let labels = [];
+        let dados = [];
+        for (let i = 0; i < data.length; i++) {
+            console.log(data[i])
+            dados.push(data[i].ask)
+            let dt = new Date(parseInt(data[i].timestamp) * 1000);
+            labels.push(`${dt.getMonth()}/${dt.getDate()}`)
+        }
+        if(chartblock){
+            chartblock.destroy();
+            chartblock = null;
+        }
+        chartblock = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: `BRL-${selectedCurrency}`,
+                        data: dados,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Chart.js Line Chart'
+                    }
+                }
+            },
+        });
+    }
+
+    window.onload = updateExchangeRate;
+    const ctx = document.getElementById('myChart');
+
+
+</script>
+
 </html>
