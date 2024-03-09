@@ -13,17 +13,19 @@ body{
 .interface{
     max-width: 1480px;
     margin: 0 auto;
-    background-color: rgb(39, 39, 39);
 }
 
 
 
+
+header{
+    padding: 40px 4%;
+}
+
 header > .interface {
-    padding: 20px ;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-radius: 10px;
 }
 
 header a{
@@ -67,11 +69,10 @@ header .conta button:hover{
 }
 
 .cambio{
-    padding: 5px;
-    color: black;
     background-color: white;
-    border: 1px;
 }
 
-
-
+.grafico-cambio{
+    width: 600px;
+    height: 400px;
+}
