@@ -102,6 +102,17 @@ header .conta button:hover{
     padding: 5px;
 }
 
+#moeda {
+    margin-left: 100px;
+    margin-top: 10px;
+    text-align: center;
+    width: 70px;
+    height: 30px;
+    background-color: #000000;
+    border-color: #05d405;
+    color: white;
+    border-radius: 7px;
+}
 
 .grafico-cambio {
     margin-top: 30px;
