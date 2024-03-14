@@ -45,7 +45,6 @@
             <tr id="exchange-rate-row">
                 <td>
                     <label for="escolha">Moeda:</label>
-                    
                     <select id="escolha" name="escolha" onchange="updateExchangeRate()">
                         <option value="USD">Dólar Americano (USD)</option>
                         <option value="EUR">Euro (EUR)</option>
@@ -53,7 +52,7 @@
                         <option value="JPY">Iene japônes (JPY)</option>
                         <option value="CAD">Dolar Canadense (CAD)</option>
                     </select>
-                
+                    <input type="value" id="moeda" placeholder="1">
                 </td>
                 <td id="exchange-rate"></td>
             </tr>
