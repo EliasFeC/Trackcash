@@ -44,14 +44,14 @@
             </tr>
             <tr id="exchange-rate-row">
                 <td>
-                    <label for="escolha">Escolha uma moeda:</label>
+                    <label for="escolha">Moeda:</label>
                     
                     <select id="escolha" name="escolha" onchange="updateExchangeRate()">
                         <option value="USD">Dólar Americano (USD)</option>
                         <option value="EUR">Euro (EUR)</option>
                         <option value="GBP">Libra Esterlina (GBP)</option>
-                        <option value="JPY">Iene japônes</option>
-                        <option value="CAD">Dolar Canadense</option>
+                        <option value="JPY">Iene japônes (JPY)</option>
+                        <option value="CAD">Dolar Canadense (CAD)</option>
                     </select>
                 
                 </td>
@@ -65,7 +65,7 @@
     let chartblock = null;
 
     async function fetchExchangeRate(base) {
-        const apiUrl = `https://economia.awesomeapi.com.br/last/BRL-${base}`;
+        const apiUrl = `https://economia.awesomeapi.com.br/last/${base}-BRL`;
         try {
             const response = await fetch(`${apiUrl}`);
             const data = await response.json();
@@ -78,7 +78,7 @@
     async function updateExchangeRate() {
         const selectedCurrency = document.getElementById('escolha').value;
         const rates = await fetchExchangeRate(selectedCurrency);
-        document.getElementById('exchange-rate').innerText = `Taxa de câmbio para BRL: ${rates[`BRL${selectedCurrency}`].ask}`;
+        document.getElementById('exchange-rate').innerText = `Taxa de câmbio para BRL: ${rates[`${selectedCurrency}BRL`].ask}`;
         var query_vars = {
             apikey: 'fca_live_k7qgm7xjiMokaysiPd3oWbEzdbt8CpcsWwfrvhDH',
             date: "2024-03-04",
